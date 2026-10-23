@@ -36,3 +36,19 @@ int net_listen(const char *port, int backlog) {
     if (listen(fd, backlog) < 0) { perror("listen"); close(fd); return -1; }
     return fd;
 }
+
+/* write() may write fewer bytes than asked; loop until done. */
+ssize_t net_write_all(int fd, const void *buf, size_t len) {
+    const char *p = buf;
+    size_t left = len;
+    while (left > 0) {
+        ssize_t n = write(fd, p, left);
+        if (n < 0) {
+            if (errno == EINTR) continue;
+            return -1;
+        }
+        p += n;
+        left -= (size_t)n;
+    }
+    return (ssize_t)len;
+}
