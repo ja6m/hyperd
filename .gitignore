@@ -56,3 +56,6 @@ dkms.conf
 
 # AI
 CLAUDE.md
+
+#built files
+build/server
